@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model List<Tablero>
+
+<h2>Listado de Tableros</h2>
+
+<table class="table table-success table-striped">
+    <thead>
+        <tr>
+            <th hidden>ID</th>
+            <th>Id usuario propietario</th>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tab in Model)
+        {
+            <tr>
+                <td hidden>@tab.Id</td>
+                <td>@tab.IdUsuarioPropietario</td>
+                <td>@tab.Nombre</td>
+                <td>@tab.Descripcion</td>
+                <td>
+                    <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-idTablero="@tab.Id"
+                        class="btn btn-info">Editar</a>
+                    <a asp-controller="Tablero" asp-action="DeleteTablero" asp-route-idTablero="@tab.Id"
+                        onclick="return confirm('¿Estás seguro que quieres eliminar el tablero?')"
+                        class="btn btn-outline-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
