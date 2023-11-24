@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.DataProtection.Repositories;
-using TP9.Clases;
+using tl2_tp10_2023_NicoMagro.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 
-namespace TP9.Repositorios
+namespace tl2_tp10_2023_NicoMagro.Repositories
 {
     public class UsuarioRepository : IUsuarioRepository
     {

@@ -1,6 +1,6 @@
-using TP9.Clases;
+using tl2_tp10_2023_NicoMagro.Models;
 
-namespace TP9.Repositorios
+namespace tl2_tp10_2023_NicoMagro.Repositories
 {
     public interface ITableroRepository
     {
@@ -8,5 +8,6 @@ namespace TP9.Repositorios
         public void Update(int id, Tablero tablero);
         public Tablero GetById(int id);
         public List<Tablero> GetAll();
+        public void Remove(int id);
     }
 }

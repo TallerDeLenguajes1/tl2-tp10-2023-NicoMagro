@@ -1,4 +1,4 @@
-namespace TP9.Clases
+namespace tl2_tp10_2023_NicoMagro.Models
 {
     public class Tablero
     {

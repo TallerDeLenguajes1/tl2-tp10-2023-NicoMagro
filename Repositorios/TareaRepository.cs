@@ -1,7 +1,7 @@
-using TP9.Clases;
+using tl2_tp10_2023_NicoMagro.Models;
 using Microsoft.Data.Sqlite;
 
-namespace TP9.Repositorios
+namespace tl2_tp10_2023_NicoMagro.Repositories
 {
     public class TareaRepository : ITareaRepository
     {
