@@ -17,6 +17,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             repository = new UsuarioRepository();
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             List<Usuario> users = repository.GetAll();
@@ -31,36 +32,37 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("Create")]
         public IActionResult CreateUser()
         {
             return View(new Usuario());
         }
 
-        [HttpPost]
+        [HttpPost("Create")]
         public IActionResult CreateUser(Usuario user)
         {
             repository.Create(user);
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
+        [HttpGet("Update/{id}")]
         public IActionResult UpdateUser(int id)
         {
             return View(repository.GetById(id));
         }
 
-        [HttpPost]
+        [HttpPost("Update")]
         public IActionResult UpdateUser(Usuario user)
         {
-            var user2 = repository.GetById(user.Id);
-            user2.Nombre = user.Nombre;
+            var userFromDb = repository.GetById(user.Id);
+            userFromDb.Nombre = user.Nombre;
 
-            repository.Update(user.Id, user2);
+            repository.Update(user.Id, userFromDb);
 
             return RedirectToAction("Index");
         }
 
+        [HttpGet("Delete/{id}")]
         public IActionResult DeleteUser(int id)
         {
             repository.Remove(id);
@@ -68,11 +70,12 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet("Error")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
     }
+
 }

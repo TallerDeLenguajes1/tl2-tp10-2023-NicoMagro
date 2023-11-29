@@ -10,7 +10,7 @@ namespace tl2_tp10_2023_NicoMagro.Repositories
 {
     public class UsuarioRepository : IUsuarioRepository
     {
-        private string cadenaConexion = "Data Source=DB/Kanban.db;Cache=Shared";
+        private string cadenaConexion = "Data Source=BD/Kanban.db;Cache=Shared";
 
         public void Create(Usuario user)
         {
