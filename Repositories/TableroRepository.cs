@@ -5,7 +5,7 @@ namespace tl2_tp10_2023_NicoMagro.Repositories
 {
     public class TableroRepository : ITableroRepository
     {
-        private string cadenaConexion = "Data Source=DB/Kanban.db;Cache=Shared";
+        private string cadenaConexion = "Data Source=BD/Kanban.db;Cache=Shared";
 
         public void Create(Tablero tablero)
         {
@@ -74,7 +74,7 @@ namespace tl2_tp10_2023_NicoMagro.Repositories
 
         public Tablero GetById(int id)
         {
-            var query = "SELECT Id, Id_usuario_propietario, Nombre, Descripcion FROM Tablero WHERE Id = @Id";
+            var query = "SELECT * FROM Tablero WHERE Id = @Id";
             var tablero = new Tablero();
 
             using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
@@ -86,10 +86,13 @@ namespace tl2_tp10_2023_NicoMagro.Repositories
 
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
-                    tablero.Id = Convert.ToInt32(reader["Id"]);
-                    tablero.IdUsuarioPropietario = Convert.ToInt32(reader["Id_usuario_propietario"]);
-                    tablero.Nombre = reader["Nombre"].ToString();
-                    tablero.Descripcion = reader["Descripcion"].ToString();
+                    while (reader.Read())
+                    {
+                        tablero.Id = Convert.ToInt32(reader["Id"]);
+                        tablero.IdUsuarioPropietario = Convert.ToInt32(reader["Id_usuario_propietario"]);
+                        tablero.Nombre = reader["Nombre"].ToString();
+                        tablero.Descripcion = reader["Descripcion"].ToString();
+                    }
                 }
 
                 connection.Close();
@@ -99,14 +102,15 @@ namespace tl2_tp10_2023_NicoMagro.Repositories
 
         public void Remove(int id)
         {
-            var query = "DELETE FROM Tablero WHERE Id = @Id";
 
             using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
             {
-                connection.Open();
-                var command = new SqliteCommand(query, connection);
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = $"DELETE FROM Tablero WHERE id = @idTablero;";
+                command.Parameters.Add(new SqliteParameter("@idTablero", id));
 
-                command.Parameters.Add(new SqliteParameter("@Id", id));
+                connection.Open();
+
                 command.ExecuteNonQuery();
 
                 connection.Close();

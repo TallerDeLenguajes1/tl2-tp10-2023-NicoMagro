@@ -18,7 +18,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
 
         public IActionResult Index()
         {
-            List<Tablero> tableros = new List<Tablero>();
+            List<Tablero> tableros = repository.GetAll();
 
             if (tableros != null)
             {
@@ -31,26 +31,26 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult CrearTablero()
         {
             return View(new Tablero());
         }
 
         [HttpPost]
-        public IActionResult Create(Tablero tablero)
+        public IActionResult CrearTablero(Tablero tablero)
         {
             repository.Create(tablero);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public IActionResult EditarTablero(int id)
         {
             return View(repository.GetById(id));
         }
 
         [HttpPost]
-        public IActionResult Update(Tablero tablero)
+        public IActionResult EditarTablero(Tablero tablero)
         {
             var tablero2 = repository.GetById(tablero.Id);
             tablero2.Nombre = tablero.Nombre;
@@ -61,9 +61,9 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult DeleteTablero(int idTablero)
+        public IActionResult EliminarTablero(int Id)
         {
-            repository.Remove(idTablero);
+            repository.Remove(Id);
 
             return RedirectToAction("Index");
         }

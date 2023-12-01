@@ -31,9 +31,9 @@
                 <td>@tarea.Estado</td>
                 <td>@tarea.IdUsuarioAsignado</td>
                 <td>
-                    <a asp-controller="Tarea" asp-action="EditarTarea" asp-route-idTarea="@tarea.Id"
+                    <a asp-controller="Tarea" asp-action="EditarTarea" asp-route-Id="@tarea.Id"
                         class="btn btn-info">Editar</a>
-                    <a asp-controller="Tarea" asp-action="DeleteTarea" asp-route-idTarea="@tarea.Id"
+                    <a asp-controller="Tarea" asp-action="EliminarTarea" asp-route-Id="@tarea.Id"
                         onclick="return confirm('¿Estás seguro que quieres eliminar la tarea?')"
                         class="btn btn-outline-danger">Eliminar</a>
                 </td>

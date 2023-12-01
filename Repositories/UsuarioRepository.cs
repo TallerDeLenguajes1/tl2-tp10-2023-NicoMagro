@@ -100,7 +100,7 @@ namespace tl2_tp10_2023_NicoMagro.Repositories
 
         public void Remove(int id)
         {
-            var query = "DELETE FROM Usuario WHERE Id = @Id";
+            var query = $"DELETE FROM Usuario WHERE Id = @Id";
 
             using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
             {

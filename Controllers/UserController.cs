@@ -5,7 +5,6 @@ using System.Diagnostics;
 
 namespace tl2_tp10_2023_NicoMagro.Controllers
 {
-    [Route("[controller]")]
     public class UserController : Controller
     {
         private readonly ILogger<UserController> _logger;
@@ -32,26 +31,26 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             }
         }
 
-        [HttpGet("Create")]
+        [HttpGet]
         public IActionResult CreateUser()
         {
             return View(new Usuario());
         }
 
-        [HttpPost("Create")]
+        [HttpPost]
         public IActionResult CreateUser(Usuario user)
         {
             repository.Create(user);
             return RedirectToAction("Index");
         }
 
-        [HttpGet("Update/{id}")]
+        [HttpGet]
         public IActionResult UpdateUser(int id)
         {
             return View(repository.GetById(id));
         }
 
-        [HttpPost("Update")]
+        [HttpPost]
         public IActionResult UpdateUser(Usuario user)
         {
             var userFromDb = repository.GetById(user.Id);
@@ -62,7 +61,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet("Delete/{id}")]
+        [HttpGet]
         public IActionResult DeleteUser(int id)
         {
             repository.Remove(id);
@@ -70,7 +69,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet("Error")]
+        [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

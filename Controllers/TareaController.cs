@@ -18,7 +18,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
 
         public IActionResult Index()
         {
-            List<Tarea> tareas = new List<Tarea>();
+            List<Tarea> tareas = repository.GetAll();
 
             if (tareas != null)
             {
@@ -31,13 +31,13 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult CrearTarea()
         {
             return View(new Tarea());
         }
 
         [HttpPost]
-        public IActionResult Create(Tarea tarea)
+        public IActionResult CrearTarea(Tarea tarea)
         {
             repository.Create(1, tarea);
             return RedirectToAction("Index");
@@ -66,9 +66,9 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         }
 
 
-        public IActionResult DeleteTarea(int id)
+        public IActionResult EliminarTarea(int Id)
         {
-            repository.Remove(id);
+            repository.Remove(Id);
 
             return RedirectToAction("Index");
         }

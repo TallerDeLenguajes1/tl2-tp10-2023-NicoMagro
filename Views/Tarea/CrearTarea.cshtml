@@ -1,10 +1,6 @@
 @model Tarea
 
 <form asp-controller="Tarea" asp-action="CrearTarea">
-    <div class="mb-3" class="form-group">
-        <label asp-for="@Model.Id" class="form-label"></label>
-        <input asp-for="@Model.Id" class="form-control" />
-    </div>
 
     <div class="mb-3" class="form-group">
         <label asp-for="@Model.Nombre" class="form-label"></label>
@@ -30,6 +26,11 @@
     <div class="mb-3" class="form-group">
         <label asp-for="@Model.Color" class="form-label"></label>
         <input asp-for="@Model.Color" class="form-control" />
+    </div>
+
+    <div class="mb-3" class="form-group">
+        <label asp-for="@Model.IdUsuarioAsignado" class="form-label"></label>
+        <input asp-for="@Model.IdUsuarioAsignado" class="form-control" />
     </div>
 
     <button type="submit" class="btn btn-info">Crear</button>
