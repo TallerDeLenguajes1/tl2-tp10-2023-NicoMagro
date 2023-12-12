@@ -19,6 +19,11 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
+
             List<Usuario> users = repository.GetAll();
 
             if (users != null)
@@ -34,12 +39,20 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         [HttpGet]
         public IActionResult CreateUser()
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
             return View(new Usuario());
         }
 
         [HttpPost]
         public IActionResult CreateUser(Usuario user)
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
             repository.Create(user);
             return RedirectToAction("Index");
         }
@@ -47,12 +60,20 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         [HttpGet]
         public IActionResult UpdateUser(int id)
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
             return View(repository.GetById(id));
         }
 
         [HttpPost]
         public IActionResult UpdateUser(Usuario user)
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
             var userFromDb = repository.GetById(user.Id);
             userFromDb.Nombre = user.Nombre;
 
@@ -64,9 +85,23 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         [HttpGet]
         public IActionResult DeleteUser(int id)
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
             repository.Remove(id);
 
             return RedirectToAction("Index");
+        }
+
+        public bool Logueado()
+        {
+            return HttpContext.Session.Keys.Any();
+        }
+
+        private bool esAdmin()
+        {
+            return HttpContext.Session.Keys.Any() && ((int)HttpContext.Session.GetInt32("rol") == 1);
         }
 
         [HttpGet]

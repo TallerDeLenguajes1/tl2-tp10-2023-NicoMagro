@@ -15,7 +15,21 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        if (!Logueado())
+        {
+            return RedirectToRoute(new { controller = "Login", action = "Index" });
+        }
         return View();
+    }
+
+    public bool Logueado()
+    {
+        return HttpContext.Session.Keys.Any();
+    }
+
+    private bool esAdmin()
+    {
+        return HttpContext.Session.Keys.Any() && ((int)HttpContext.Session.GetInt32("rol") == 1);
     }
 
     public IActionResult Privacy()

@@ -18,6 +18,11 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
 
         public IActionResult Index()
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
+
             List<Tarea> tareas = repository.GetAll();
 
             if (tareas != null)
@@ -33,12 +38,20 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         [HttpGet]
         public IActionResult CrearTarea()
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
             return View(new Tarea());
         }
 
         [HttpPost]
         public IActionResult CrearTarea(Tarea tarea)
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
             repository.Create(1, tarea);
             return RedirectToAction("Index");
         }
@@ -46,6 +59,11 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         [HttpGet]
         public IActionResult EditarTarea(int id)
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
+
             return View(repository.GetById(id));
         }
 
@@ -53,6 +71,11 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         [HttpPost]
         public IActionResult EditarTarea(Tarea tarea)
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
+
             var tarea2 = repository.GetById(tarea.Id);
 
             tarea2.Nombre = tarea.Nombre;
@@ -68,9 +91,24 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
 
         public IActionResult EliminarTarea(int Id)
         {
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
+
             repository.Remove(Id);
 
             return RedirectToAction("Index");
+        }
+
+        public bool Logueado()
+        {
+            return HttpContext.Session.Keys.Any();
+        }
+
+        private bool esAdmin()
+        {
+            return HttpContext.Session.Keys.Any() && ((int)HttpContext.Session.GetInt32("rol") == 1);
         }
 
 

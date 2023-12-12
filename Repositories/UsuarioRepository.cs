@@ -63,6 +63,8 @@ namespace tl2_tp10_2023_NicoMagro.Repositories
                         var user = new Usuario();
                         user.Id = Convert.ToInt32(reader["Id"]);
                         user.Nombre = reader["Nombre_de_usuario"].ToString();
+                        user.Password = reader["Password"].ToString();
+                        user.RolUsuario = (Rol)Convert.ToInt32(reader["RolUsuario"]);
                         Usuarios.Add(user);
                     }
                 }
