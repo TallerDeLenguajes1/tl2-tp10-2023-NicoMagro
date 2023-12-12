@@ -1,3 +1,5 @@
+using tl2_tp10_2023_NicoMagro.ViewModels.Usuarios;
+
 namespace tl2_tp10_2023_NicoMagro.Models
 {
     public enum Rol
@@ -20,5 +22,26 @@ namespace tl2_tp10_2023_NicoMagro.Models
 
         public bool EsAdministrador => RolUsuario == Rol.Administrador;
         public bool EsOperador => RolUsuario == Rol.Operador;
+
+        public Usuario()
+        {
+
+        }
+
+        public Usuario(CrearUsuarioViewModel vm)
+        {
+            this.Nombre = vm.Nombre;
+            this.Password = vm.Password;
+            this.RolUsuario = vm.RolUsuario;
+        }
+
+        public Usuario(ModificarUsuarioViewModel vm)
+        {
+            this.Id = vm.Id;
+            this.Nombre = vm.Nombre;
+            this.Password = vm.Password;
+            this.RolUsuario = vm.RolUsuario;
+        }
     }
+
 }

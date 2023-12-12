@@ -14,7 +14,7 @@ namespace tl2_tp10_2023_NicoMagro.Repositories
 
         public void Create(Usuario user)
         {
-            var query = $"INSERT INTO Usuario (Nombre_de_usuario) VALUES (@Nombre)";
+            var query = $"INSERT INTO Usuario (Nombre_de_usuario, RolUsuario, Password) VALUES (@Nombre, @RolUsuario, @Password)";
             using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
             {
 
@@ -23,6 +23,8 @@ namespace tl2_tp10_2023_NicoMagro.Repositories
 
                 //command.Parameters.Add(new SQLiteParameter("@Id", user.Id));
                 command.Parameters.Add(new SqliteParameter("@Nombre", user.Nombre));
+                command.Parameters.Add(new SqliteParameter("@RolUsuario", user.RolUsuario));
+                command.Parameters.Add(new SqliteParameter("@Password", user.Password));
                 connection.Open();
                 command.ExecuteNonQuery();
 
@@ -32,7 +34,7 @@ namespace tl2_tp10_2023_NicoMagro.Repositories
 
         public void Update(int id, Usuario user)
         {
-            var query = "UPDATE Usuario SET Nombre_de_usuario = @Nombre WHERE Id = @Id";
+            var query = "UPDATE Usuario SET Nombre_de_usuario = @Nombre, RolUsuario = @RolUsuario, Password = @Password WHERE Id = @Id";
 
             using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
             {
@@ -41,6 +43,8 @@ namespace tl2_tp10_2023_NicoMagro.Repositories
 
                 command.Parameters.Add(new SqliteParameter("@Id", id));
                 command.Parameters.Add(new SqliteParameter("@Nombre", user.Nombre));
+                command.Parameters.Add(new SqliteParameter("@RolUsuario", user.RolUsuario));
+                command.Parameters.Add(new SqliteParameter("@Password", user.Password));
                 command.ExecuteNonQuery();
 
                 connection.Close();

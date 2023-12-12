@@ -99,7 +99,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
 
         private bool esAdmin()
         {
-            return HttpContext.Session.Keys.Any() && ((int)HttpContext.Session.GetInt32("rol") == 1);
+            return HttpContext.Session.Keys.Any() && ((int)HttpContext.Session.GetInt32("rol") == 0);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

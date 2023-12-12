@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using tl2_tp10_2023_NicoMagro.Models;
 using tl2_tp10_2023_NicoMagro.Repositories;
+using tl2_tp10_2023_NicoMagro.ViewModels.Usuarios;
 using System.Diagnostics;
 
 namespace tl2_tp10_2023_NicoMagro.Controllers
@@ -21,14 +22,16 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         {
             if (!Logueado())
             {
+                TempData["ErrorMessage"] = "Debes iniciar sesión para acceder a esta sección.";
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
 
             List<Usuario> users = repository.GetAll();
+            ListarUsuariosViewModel vm = new ListarUsuariosViewModel(users);
 
             if (users != null)
             {
-                return View(users);
+                return View(vm);
             }
             else
             {
@@ -43,17 +46,17 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             {
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
-            return View(new Usuario());
+            return View(new CrearUsuarioViewModel());
         }
 
         [HttpPost]
-        public IActionResult CreateUser(Usuario user)
+        public IActionResult CreateUser(CrearUsuarioViewModel vm)
         {
             if (!Logueado())
             {
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
-            repository.Create(user);
+            repository.Create(new Usuario(vm));
             return RedirectToAction("Index");
         }
 
@@ -64,20 +67,29 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             {
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
-            return View(repository.GetById(id));
+            if (!esAdmin())
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
+                return RedirectToAction("Index");
+            }
+            ModificarUsuarioViewModel modificarUsuarioVM = new ModificarUsuarioViewModel(repository.GetById(id));
+            return View(modificarUsuarioVM);
         }
 
         [HttpPost]
-        public IActionResult UpdateUser(Usuario user)
+        public IActionResult UpdateUser(ModificarUsuarioViewModel vm)
         {
             if (!Logueado())
             {
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
-            var userFromDb = repository.GetById(user.Id);
-            userFromDb.Nombre = user.Nombre;
-
-            repository.Update(user.Id, userFromDb);
+            if (!esAdmin())
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
+                return RedirectToAction("Index");
+            }
+            var userFromDb = new Usuario(vm);
+            repository.Update(userFromDb.Id, userFromDb);
 
             return RedirectToAction("Index");
         }
@@ -101,7 +113,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
 
         private bool esAdmin()
         {
-            return HttpContext.Session.Keys.Any() && ((int)HttpContext.Session.GetInt32("rol") == 1);
+            return HttpContext.Session.Keys.Any() && ((int)HttpContext.Session.GetInt32("rol") == 0);
         }
 
         [HttpGet]
