@@ -2,7 +2,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-@model List<Tablero>
+@model tl2_tp10_2023_NicoMagro.ViewModels.Tableros.ListarTablerosViewModel
 
 <h2>Listado de Tableros</h2>
 
@@ -17,7 +17,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var tab in Model)
+        @foreach (var tab in Model.ListadoTableros)
         {
             <tr>
                 <td hidden>@tab.Id</td>
@@ -25,9 +25,9 @@
                 <td>@tab.Nombre</td>
                 <td>@tab.Descripcion</td>
                 <td>
-                    <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-Id="@tab.Id"
+                    <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-id="@tab.Id"
                         class="btn btn-info">Editar</a>
-                    <a asp-controller="Tablero" asp-action="EliminarTablero" asp-route-Id="@tab.Id"
+                    <a asp-controller="Tablero" asp-action="EliminarTablero" asp-route-id="@tab.Id"
                         onclick="return confirm('¿Estás seguro que quieres eliminar el Tablero?')"
                         class="btn btn-outline-danger">Eliminar</a>
                 </td>

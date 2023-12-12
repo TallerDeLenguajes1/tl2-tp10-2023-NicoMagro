@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using tl2_tp10_2023_NicoMagro.Models;
 using tl2_tp10_2023_NicoMagro.Repositories;
 using System.Diagnostics;
+using tl2_tp10_2023_NicoMagro.ViewModels.Tareas;
 
 namespace tl2_tp10_2023_NicoMagro.Controllers
 {
@@ -24,10 +25,11 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             }
 
             List<Tarea> tareas = repository.GetAll();
+            ListarTareasViewModel vm = new ListarTareasViewModel(tareas);
 
             if (tareas != null)
             {
-                return View(tareas);
+                return View(vm);
             }
             else
             {
@@ -42,17 +44,18 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             {
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
-            return View(new Tarea());
+            return View(new CrearTareaViewModel());
         }
 
         [HttpPost]
-        public IActionResult CrearTarea(Tarea tarea)
+        public IActionResult CrearTarea(CrearTareaViewModel vm)
         {
             if (!Logueado())
             {
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
-            repository.Create(1, tarea);
+            var task = new Tarea(vm);
+            repository.Create(1, task);
             return RedirectToAction("Index");
         }
 
@@ -63,27 +66,27 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             {
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
-
-            return View(repository.GetById(id));
+            var vm = new ModificarTareaViewModel(repository.GetById(id));
+            return View(vm);
         }
 
 
         [HttpPost]
-        public IActionResult EditarTarea(Tarea tarea)
+        public IActionResult EditarTarea(ModificarTareaViewModel vm)
         {
             if (!Logueado())
             {
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
+            if (!esAdmin())
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
+                return RedirectToAction("Index");
+            }
 
-            var tarea2 = repository.GetById(tarea.Id);
+            var tarea2 = new Tarea(vm);
 
-            tarea2.Nombre = tarea.Nombre;
-            tarea2.Descripcion = tarea.Descripcion;
-            tarea2.Color = tarea.Color;
-            tarea2.Estado = tarea.Estado;
-
-            repository.Update(tarea.Id, tarea2);
+            repository.Update(tarea2.Id, tarea2);
 
             return RedirectToAction("Index");
         }

@@ -1,10 +1,10 @@
-@model Tarea
+@model tl2_tp10_2023_NicoMagro.ViewModels.Tareas.ModificarTareaViewModel
 
 <form asp-controller="Tarea" asp-action="EditarTarea">
     <input hidden asp-for="@Model.Id">
     <div class="mb-3" class="form-group">
-        <label asp-for="@Model.Id_tablero" class="form-label"></label>
-        <input asp-for="@Model.Id_tablero" class="form-control" />
+        <label asp-for="@Model.IdTablero" class="form-label"></label>
+        <input asp-for="@Model.IdTablero" class="form-control" />
     </div>
 
     <div class="mb-3" class="form-group">

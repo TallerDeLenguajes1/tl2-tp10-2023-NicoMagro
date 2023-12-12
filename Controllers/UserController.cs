@@ -81,6 +81,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         {
             if (!Logueado())
             {
+                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
             if (!esAdmin())
@@ -99,6 +100,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         {
             if (!Logueado())
             {
+                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
             repository.Remove(id);

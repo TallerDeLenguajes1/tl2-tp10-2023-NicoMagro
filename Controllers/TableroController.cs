@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using tl2_tp10_2023_NicoMagro.Repositories;
 using tl2_tp10_2023_NicoMagro.Models;
 using System.Diagnostics;
+using tl2_tp10_2023_NicoMagro.ViewModels.Tableros;
 
 namespace tl2_tp10_2023_NicoMagro.Controllers
 {
@@ -20,13 +21,15 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         {
             if (!Logueado())
             {
+                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
             List<Tablero> tableros = repository.GetAll();
+            ListarTablerosViewModel vm = new ListarTablerosViewModel(tableros);
 
             if (tableros != null)
             {
-                return View(tableros);
+                return View(vm);
             }
             else
             {
@@ -39,18 +42,33 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         {
             if (!Logueado())
             {
+                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
-            return View(new Tablero());
+            if (!esAdmin())
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para crear un tablero";
+                return RedirectToAction("Index");
+            }
+            return View(new CrearTableroViewModel());
         }
 
         [HttpPost]
-        public IActionResult CrearTablero(Tablero tablero)
+        public IActionResult CrearTablero(CrearTableroViewModel vm)
         {
             if (!Logueado())
             {
+                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
+            if (!esAdmin())
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para crear un tablero";
+                return RedirectToAction("Index");
+            }
+
+
+            var tablero = new Tablero(vm);
             repository.Create(tablero);
             return RedirectToAction("Index");
         }
@@ -60,23 +78,34 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         {
             if (!Logueado())
             {
+                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
-            return View(repository.GetById(id));
+            if (!esAdmin())
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para crear un tablero";
+                return RedirectToAction("Index");
+            }
+            ModificarTableroViewModel vm = new ModificarTableroViewModel(repository.GetById(id));
+            return View(vm);
         }
 
         [HttpPost]
-        public IActionResult EditarTablero(Tablero tablero)
+        public IActionResult EditarTablero(ModificarTableroViewModel vm)
         {
             if (!Logueado())
             {
+                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
-            var tablero2 = repository.GetById(tablero.Id);
-            tablero2.Nombre = tablero.Nombre;
-            tablero2.Descripcion = tablero.Descripcion;
+            if (!esAdmin())
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para crear un tablero";
+                return RedirectToAction("Index");
+            }
+            var userFromDb = new Tablero(vm);
+            repository.Update(userFromDb.Id, userFromDb);
 
-            repository.Update(tablero.Id, tablero2);
 
             return RedirectToAction("Index");
         }
@@ -85,7 +114,13 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         {
             if (!Logueado())
             {
+                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
+            if (!esAdmin())
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para crear un tablero";
+                return RedirectToAction("Index");
             }
             repository.Remove(Id);
 
