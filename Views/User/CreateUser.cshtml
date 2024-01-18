@@ -10,10 +10,18 @@
         <label asp-for="@Model.Password" class="form-label"></label>
         <input asp-for="@Model.Password" class="form-control">
     </div>
-    <div class="mb-3" class="form-group">
-        <label asp-for="@Model.RolUsuario" class="form-label"></label>
-        <input asp-for="@Model.RolUsuario" class="form-control">
+    <div class="mb-3 form-group">
+        <label asp-for="@Model.RolUsuario" class="form-label">Rol de Usuario</label>
+        <select asp-for="@Model.RolUsuario" class="form-control">
+            <option value="Administrador">Administrador</option>
+            <option value="Operador">Operador</option>
+        </select>
     </div>
+
 
     <button type="submit" class="btn btn-info">Crear</button>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

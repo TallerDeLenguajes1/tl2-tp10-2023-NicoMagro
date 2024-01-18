@@ -25,6 +25,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
                 TempData["ErrorMessage"] = "Debes iniciar sesión para acceder a esta sección.";
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
+            if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
 
             List<Usuario> users = repository.GetAll();
             ListarUsuariosViewModel vm = new ListarUsuariosViewModel(users);
@@ -42,70 +43,115 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         [HttpGet]
         public IActionResult CreateUser()
         {
-            if (!Logueado())
+            try
             {
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
+                if (!Logueado())
+                {
+                    return RedirectToRoute(new { controller = "Login", action = "Index" });
+                }
+                if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
+                return View(new CrearUsuarioViewModel());
             }
-            return View(new CrearUsuarioViewModel());
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Error en el endpoint 'CreateUser'. Detalles: {ex.ToString()}");
+                return View("Error");
+            }
         }
 
         [HttpPost]
         public IActionResult CreateUser(CrearUsuarioViewModel vm)
         {
-            if (!Logueado())
+            try
             {
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
+                if (!Logueado())
+                {
+                    return RedirectToRoute(new { controller = "Login", action = "Index" });
+                }
+                if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
+                repository.Create(new Usuario(vm));
+                return RedirectToAction("Index");
             }
-            repository.Create(new Usuario(vm));
-            return RedirectToAction("Index");
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Error en el endpoint 'CreateUser'. Detalles: {ex.ToString()}");
+                return View("Error");
+            }
         }
 
         [HttpGet]
         public IActionResult UpdateUser(int id)
         {
-            if (!Logueado())
+            try
             {
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
+                if (!Logueado())
+                {
+                    return RedirectToRoute(new { controller = "Login", action = "Index" });
+                }
+                if (!esAdmin())
+                {
+                    TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
+                    return RedirectToAction("Index");
+                }
+                if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
+                ModificarUsuarioViewModel modificarUsuarioVM = new ModificarUsuarioViewModel(repository.GetById(id));
+                return View(modificarUsuarioVM);
             }
-            if (!esAdmin())
+            catch (System.Exception ex)
             {
-                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
-                return RedirectToAction("Index");
+                _logger.LogError($"Error en el endpoint 'UpdateUser'. Detalles: {ex.ToString()}");
+                return View("Error");
             }
-            ModificarUsuarioViewModel modificarUsuarioVM = new ModificarUsuarioViewModel(repository.GetById(id));
-            return View(modificarUsuarioVM);
         }
 
         [HttpPost]
         public IActionResult UpdateUser(ModificarUsuarioViewModel vm)
         {
-            if (!Logueado())
+            try
             {
-                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
-            }
-            if (!esAdmin())
-            {
-                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
+                if (!Logueado())
+                {
+                    TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
+                    return RedirectToRoute(new { controller = "Login", action = "Index" });
+                }
+                if (!esAdmin())
+                {
+                    TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
+                    return RedirectToAction("Index");
+                }
+                if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
+                var userFromDb = new Usuario(vm);
+                repository.Update(userFromDb.Id, userFromDb);
+
                 return RedirectToAction("Index");
             }
-            var userFromDb = new Usuario(vm);
-            repository.Update(userFromDb.Id, userFromDb);
-
-            return RedirectToAction("Index");
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Error en el endpoint 'UpdateUser'. Detalles: {ex.ToString()}");
+                return View("Error");
+            }
         }
 
         [HttpGet]
         public IActionResult DeleteUser(int id)
         {
-            if (!Logueado())
+            try
             {
-                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
-            }
-            repository.Remove(id);
+                if (!Logueado())
+                {
+                    TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
+                    return RedirectToRoute(new { controller = "Login", action = "Index" });
+                }
+                if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
+                repository.Remove(id);
 
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Error en el endpoint 'DeleteUser'. Detalles: {ex.ToString()}");
+                return View("Error");
+            }
         }
 
         public bool Logueado()

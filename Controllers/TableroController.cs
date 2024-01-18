@@ -24,6 +24,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
                 TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
+            if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
             List<Tablero> tableros = repository.GetAll();
             ListarTablerosViewModel vm = new ListarTablerosViewModel(tableros);
 
@@ -50,6 +51,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
                 TempData["ErrorMessage"] = "No tienes permisos para crear un tablero";
                 return RedirectToAction("Index");
             }
+            if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
             return View(new CrearTableroViewModel());
         }
 
@@ -66,6 +68,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
                 TempData["ErrorMessage"] = "No tienes permisos para crear un tablero";
                 return RedirectToAction("Index");
             }
+            if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
 
 
             var tablero = new Tablero(vm);
@@ -86,6 +89,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
                 TempData["ErrorMessage"] = "No tienes permisos para crear un tablero";
                 return RedirectToAction("Index");
             }
+            if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
             ModificarTableroViewModel vm = new ModificarTableroViewModel(repository.GetById(id));
             return View(vm);
         }
@@ -103,6 +107,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
                 TempData["ErrorMessage"] = "No tienes permisos para crear un tablero";
                 return RedirectToAction("Index");
             }
+            if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
             var userFromDb = new Tablero(vm);
             repository.Update(userFromDb.Id, userFromDb);
 
@@ -112,19 +117,29 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
 
         public IActionResult EliminarTablero(int Id)
         {
-            if (!Logueado())
+            try
             {
-                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
-            }
-            if (!esAdmin())
-            {
-                TempData["ErrorMessage"] = "No tienes permisos para crear un tablero";
+                if (!Logueado())
+                {
+                    TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
+                    return RedirectToRoute(new { controller = "Login", action = "Index" });
+                }
+                if (!esAdmin())
+                {
+                    TempData["ErrorMessage"] = "No tienes permisos para crear un tablero";
+                    return RedirectToAction("Index");
+                }
+                if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
+                repository.Remove(Id);
+
                 return RedirectToAction("Index");
             }
-            repository.Remove(Id);
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Error en el endpoint 'EliminarTablero'. Detalles: {ex.ToString()}");
+                return ViewComponent("Error");
+            }
 
-            return RedirectToAction("Index");
         }
 
         public bool Logueado()

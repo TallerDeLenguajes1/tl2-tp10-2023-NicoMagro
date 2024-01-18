@@ -31,14 +31,29 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         [HttpPost]
         public IActionResult Login(LoginViewModel loginViewModel)
         {
-            var lista = repository.GetAll();
-            var usuario = repository.GetAll().FirstOrDefault(u => u.Nombre == loginViewModel.Nombre && u.Password == loginViewModel.Password);
-            if (usuario == null)
+            try
             {
-                return RedirectToAction("Index");
+                var lista = repository.GetAll();
+                var usuario = lista.FirstOrDefault(u => u.Nombre == loginViewModel.Nombre && u.Password == loginViewModel.Password);
+
+                if (usuario == null)
+                {
+                    _logger.LogWarning($"Intento de acceso inválido - Usuario: {loginViewModel.Nombre} Clave ingresada: {loginViewModel.Password}");
+                    return RedirectToAction("Index");
+                }
+
+                LoguearUsuario(usuario);
+
+                _logger.LogInformation($"El usuario {usuario.Nombre} ingresó correctamente.");
+
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
             }
-            LoguearUsuario(usuario);
-            return RedirectToRoute(new { controller = "Home", action = "Index" });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error durante el intento de acceso. Detalles: {ex.ToString()}");
+
+                return View("Error");
+            }
         }
 
         public void LoguearUsuario(Usuario usuario)

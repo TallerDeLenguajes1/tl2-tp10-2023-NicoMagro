@@ -15,11 +15,19 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        if (!Logueado())
+        try
         {
-            return RedirectToRoute(new { controller = "Login", action = "Index" });
+            if (!Logueado())
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
+            return View();
         }
-        return View();
+        catch (System.Exception ex)
+        {
+            _logger.LogError($"Error en el endpoint 'Index'. Detalles: {ex.ToString()}");
+            return ViewComponent("Error");
+        }
     }
 
     public bool Logueado()

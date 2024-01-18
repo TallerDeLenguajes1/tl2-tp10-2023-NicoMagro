@@ -23,6 +23,7 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
             {
                 return RedirectToRoute(new { controller = "Login", action = "Index" });
             }
+            if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
 
             List<Tarea> tareas = repository.GetAll();
             ListarTareasViewModel vm = new ListarTareasViewModel(tareas);
@@ -40,68 +41,113 @@ namespace tl2_tp10_2023_NicoMagro.Controllers
         [HttpGet]
         public IActionResult CrearTarea()
         {
-            if (!Logueado())
+            try
             {
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
+                if (!Logueado())
+                {
+                    return RedirectToRoute(new { controller = "Login", action = "Index" });
+                }
+                if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
+                return View(new CrearTareaViewModel());
             }
-            return View(new CrearTareaViewModel());
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Error en el endpoint 'CrearTarea'. Detalles: {ex.ToString()}");
+                return View("Error");
+            }
         }
 
         [HttpPost]
         public IActionResult CrearTarea(CrearTareaViewModel vm)
         {
-            if (!Logueado())
+            try
             {
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
+                if (!Logueado())
+                {
+                    return RedirectToRoute(new { controller = "Login", action = "Index" });
+                }
+                if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
+                var task = new Tarea(vm);
+                repository.Create(1, task);
+                return RedirectToAction("Index");
             }
-            var task = new Tarea(vm);
-            repository.Create(1, task);
-            return RedirectToAction("Index");
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Error en el endpoint 'CrearTarea'. Detalles: {ex.ToString()}");
+                return View("Error");
+            }
         }
 
         [HttpGet]
         public IActionResult EditarTarea(int id)
         {
-            if (!Logueado())
+            try
             {
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
+                if (!Logueado())
+                {
+                    return RedirectToRoute(new { controller = "Login", action = "Index" });
+                }
+                if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
+                var vm = new ModificarTareaViewModel(repository.GetById(id));
+                return View(vm);
             }
-            var vm = new ModificarTareaViewModel(repository.GetById(id));
-            return View(vm);
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Error en el endpoint 'EditarTarea'. Detalles: {ex.ToString()}");
+                return View("Error");
+            }
         }
 
 
         [HttpPost]
         public IActionResult EditarTarea(ModificarTareaViewModel vm)
         {
-            if (!Logueado())
+            try
             {
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
-            }
-            if (!esAdmin())
-            {
-                TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
+                if (!Logueado())
+                {
+                    return RedirectToRoute(new { controller = "Login", action = "Index" });
+                }
+                if (!esAdmin())
+                {
+                    TempData["ErrorMessage"] = "No tienes permisos para editar un usuario";
+                    return RedirectToAction("Index");
+                }
+                if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
+
+                var tarea2 = new Tarea(vm);
+
+                repository.Update(tarea2.Id, tarea2);
+
                 return RedirectToAction("Index");
             }
-
-            var tarea2 = new Tarea(vm);
-
-            repository.Update(tarea2.Id, tarea2);
-
-            return RedirectToAction("Index");
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Error en el endpoint 'EditarTarea'. Detalles: {ex.ToString()}");
+                return View("Error");
+            }
         }
 
 
         public IActionResult EliminarTarea(int Id)
         {
-            if (!Logueado())
+            try
             {
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
+                if (!Logueado())
+                {
+                    return RedirectToRoute(new { controller = "Login", action = "Index" });
+                }
+                if (!ModelState.IsValid) return RedirectToAction("EditarTarea");
+
+                repository.Remove(Id);
+
+                return RedirectToAction("Index");
             }
-
-            repository.Remove(Id);
-
-            return RedirectToAction("Index");
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Error en el endpoint 'CrearTarea'. Detalles: {ex.ToString()}");
+                return View("Error");
+            }
         }
 
         public bool Logueado()
